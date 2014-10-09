@@ -175,8 +175,17 @@ class adLDAPGroups {
         $add["description"] = $attributes["description"];
         //$add["member"] = $member_array; UNTESTED
 
-        $container = "OU=" . implode(",OU=", $attributes["container"]);
-        $result = ldap_add($this->adldap->getLdapConnection(), "CN=" . $add["cn"] . ", " . $container . "," . $this->adldap->getBaseDn(), $add);
+        if(array_key_exists("container", $attributes)) {
+            $attributes["container"] = array_reverse($attributes["container"]);
+            $container = ",OU=" . implode(",OU=", $attributes["container"]);
+        } else if(array_key_exists("container", $attributes)) {
+            $attributes["containercn"] = array_reverse($attributes["containerdc"]);
+            $container = ",CN=" . implode(",CN=", $attributes["containerdc"]);
+        } else {
+            $container = "";
+        }
+        
+        $result = ldap_add($this->adldap->getLdapConnection(), "CN=" . $add["cn"] . $container . "," . $this->adldap->getBaseDn(), $add);
         if ($result != true) { 
             return false; 
         }
