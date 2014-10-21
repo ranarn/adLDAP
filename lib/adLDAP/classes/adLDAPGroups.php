@@ -455,8 +455,15 @@ class adLDAPGroups {
         if (stristr($groupName, '+')) {
             $groupName = stripslashes($groupName);   
         }
+
+        if (strpos($groupName, "=")) {
+            $filter = "distinguishedname=" . $this->adldap->utilities()->ldapSlashes($groupName);
+        }
+        else {
+            $filter = "name=" . $this->adldap->utilities()->ldapSlashes($groupName);
+        }
         
-        $filter = "(&(objectCategory=group)(name=" . $this->adldap->utilities()->ldapSlashes($groupName) . "))";
+        $filter = "(&(objectCategory=group)({$filter}))";
         if ($fields === NULL) { 
             $fields = array("member","memberof","cn","description","distinguishedname","objectcategory","samaccountname"); 
         }

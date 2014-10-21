@@ -224,10 +224,13 @@ class adLDAPUsers {
             $filter = "objectguid=" . $username;
         }
         else if (strpos($username, "@")) {
-             $filter = "userPrincipalName=" . $username;
+            $filter = "userPrincipalName=" . $username;
+        }
+        else if (strpos($username, "=")) {
+            $filter = "distinguishedname=" . $this->adldap->utilities()->ldapSlashes($username);
         }
         else {
-             $filter = "samaccountname=" . $username;
+            $filter = "samaccountname=" . $username;
         }
         $filter = "(&(objectCategory=person)({$filter}))";
         if ($fields === NULL) { 
