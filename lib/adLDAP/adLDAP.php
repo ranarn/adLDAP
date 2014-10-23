@@ -612,7 +612,7 @@ class adLDAP {
             if (array_key_exists("recursive_groups",$options)) { $this->recursiveGroups = $options["recursive_groups"]; }
             if (array_key_exists("follow_referrals", $options)) { $this->followReferrals = $options["follow_referrals"]; }
             if (array_key_exists("ad_port",$options)) { $this->setPort($options["ad_port"]); } 
-            if (array_key_exists("pagesizes", $options)) { $this->pagesize = $options["pagesize"]; }
+            if (array_key_exists("pagesize", $options)) { $this->pagesize = $options["pagesize"]; }
             if (array_key_exists("sso",$options)) { 
                 $this->setUseSSO($options["sso"]);
                 if (!$this->ldapSaslSupported()) {
