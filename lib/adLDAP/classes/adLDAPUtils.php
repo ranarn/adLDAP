@@ -282,6 +282,37 @@ class adLDAPUtils {
         }
         return $dnArr;
     }
+
+    /**
+    * Performs an ldap_search with pagination
+    *
+    * @param $filter
+    * @param $fields
+    *
+    * @return array
+    */
+    public function paginated_search($filter, $fields) {
+        if (!$this->adldap->getLdapBind()) {
+            return false;
+        }
+
+        $cookie = '';
+        $result = array('count' => 0);
+        do {
+            ldap_control_paged_result($this->adldap->getLdapConnection(), $this->adldap->getPageSize(), true, $cookie);
+
+            $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
+            $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+            $entries['count'] += $result['count'];
+
+            $result = array_merge($result, $entries);
+
+            ldap_control_paged_result_response($this->adldap->getLdapConnection(), $sr, $cookie);
+
+        } while($cookie != NULL && $cookie != '');
+
+        return $result;
+    }
 }
 
 ?>

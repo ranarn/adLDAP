@@ -169,6 +169,13 @@ class adLDAP {
     * @var int
     */
     protected $followReferrals = 0;
+
+    /**
+    * The number of entries for each page, when performing a paginated search.
+    * 
+    * @var int
+    */
+    protected $pagesize = 1000;
 	
 	// You should not need to edit anything below this line
 	//******************************************************************************************
@@ -559,6 +566,25 @@ class adLDAP {
     }
 
     /**
+    * Set pagesize
+    * 
+    * @param int $pagesize
+    * @return void
+    */
+    public function setPageSize($pagesize) {
+          $this->pagesize = $pagesize;
+    }
+
+    /**
+    * Get pagesize
+    * 
+    * @return int
+    */
+    public function getPageSize() {
+          return $this->pagesize;
+    }
+
+    /**
     * Default Constructor
     * 
     * Tries to bind to the AD domain over LDAP or LDAPs
@@ -586,6 +612,7 @@ class adLDAP {
             if (array_key_exists("recursive_groups",$options)) { $this->recursiveGroups = $options["recursive_groups"]; }
             if (array_key_exists("follow_referrals", $options)) { $this->followReferrals = $options["follow_referrals"]; }
             if (array_key_exists("ad_port",$options)) { $this->setPort($options["ad_port"]); } 
+            if (array_key_exists("pagesizes", $options)) { $this->pagesize = $options["pagesize"]; }
             if (array_key_exists("sso",$options)) { 
                 $this->setUseSSO($options["sso"]);
                 if (!$this->ldapSaslSupported()) {
@@ -836,6 +863,19 @@ class adLDAP {
             return false;
         }
         return true;
+    }
+
+    /**
+    *
+    * Detect pagination support in PHP (PHP 5 >= 5.4.0)
+    *
+    * @return bool
+    */
+    protected function ldapPaginationSupported() {
+        if (!function_exists('ldap_control_paged_result')) {
+            return false;
+        }
+        return true;       
     }
     
     /**
