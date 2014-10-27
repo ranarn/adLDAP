@@ -543,8 +543,14 @@ class adLDAPUsers {
         // Perform the search and grab all their details
         $filter = "(&(objectClass=user)(samaccounttype=" . adLDAP::ADLDAP_NORMAL_ACCOUNT .")(objectCategory=person)(cn=" . $search . "))";
         $fields = array("samaccountname","displayname");
-        $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
-        $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+
+        if($this->adldap->ldapPaginationSupported()) {
+            $entries = $this->adldap->utilities()->paginated_search($filter, $fields);
+        }
+        else {
+            $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
+            $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+        }
 
         $usersArray = array();
         for ($i=0; $i<$entries["count"]; $i++) {
@@ -603,8 +609,14 @@ class adLDAPUsers {
         }                           
         $filter = "(&(objectClass=user)(samaccounttype=" . adLDAP::ADLDAP_NORMAL_ACCOUNT .")(objectCategory=person)" . $searchParams . ")";
         $fields = array("samaccountname","displayname");
-        $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
-        $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+        
+        if($this->adldap->ldapPaginationSupported()) {
+            $entries = $this->adldap->utilities()->paginated_search($filter, $fields);
+        }
+        else {
+            $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
+            $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+        }
 
         $usersArray = array();
         for ($i=0; $i < $entries["count"]; $i++) {

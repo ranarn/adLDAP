@@ -569,8 +569,14 @@ class adLDAPGroups {
         $filter .= '(cn=' . $search . '))';
         // Perform the search and grab all their details
         $fields = array("samaccountname", "description");
-        $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
-        $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+ 
+        if($this->adldap->ldapPaginationSupported()) {
+            $entries = $this->adldap->utilities()->paginated_search($filter, $fields);
+        }
+        else {
+            $sr = ldap_search($this->adldap->getLdapConnection(), $this->adldap->getBaseDn(), $filter, $fields);
+            $entries = ldap_get_entries($this->adldap->getLdapConnection(), $sr);
+        }
 
         $groupsArray = array();        
         for ($i=0; $i<$entries["count"]; $i++) {

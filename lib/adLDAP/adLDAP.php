@@ -871,7 +871,7 @@ class adLDAP {
     *
     * @return bool
     */
-    protected function ldapPaginationSupported() {
+    public function ldapPaginationSupported() {
         if (!function_exists('ldap_control_paged_result')) {
             return false;
         }
