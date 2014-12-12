@@ -244,7 +244,7 @@ class adLDAPUsers {
         
         if (isset($entries[0])) {
             if ($entries[0]['count'] >= 1) {
-                if (in_array("memberof", $fields)) {
+                if (in_array("memberof", $fields) || in_array("*", $fields)) {
                     // AD does not return the primary group in the ldap query, we may need to fudge it
                     if ($this->adldap->getRealPrimaryGroup() && isset($entries[0]["primarygroupid"][0]) && isset($entries[0]["objectsid"][0])) {
                         //$entries[0]["memberof"][]=$this->group_cn($entries[0]["primarygroupid"][0]);
